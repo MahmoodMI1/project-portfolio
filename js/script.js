@@ -155,6 +155,18 @@
     }
   }
   window.addEventListener('hashchange', function(){ route(false); });
+
+  // Chapter arrows: slide ourselves instead of letting the browser jump to the
+  // anchor, and work even when the address bar already shows that chapter.
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var i = indexOf(decodeURIComponent(a.getAttribute('href').slice(1)));
+    if (i < 0 || reader.classList.contains('open')) return;
+    e.preventDefault();
+    history.replaceState(null, '', '#' + screens[i].id);
+    if (!locked) goTo(i);
+  });
   window.addEventListener('resize', refresh);
 
   // Decode the big painted backgrounds and card images up front, so nothing
